@@ -1,0 +1,25 @@
+from printers_repairs_Interface import Ui_Dialog
+from PyQt5.QtWidgets import QDialog
+from PyQt5 import QtCore
+from connection import get_mac_address_printer
+from connection import insert_printer_repair
+
+
+class AddPrinterRepair(QDialog, Ui_Dialog):
+    def __init__(self, parent=None):
+        super().__init__(parent, QtCore.Qt.Window)
+        self.setupUi(self)
+        self.insert_btn.clicked.connect(self.insert_bttn_clicked)
+
+    def insert_bttn_clicked(self):
+        mac_address = self.macAddressLine.text()
+        printer_repair = self.repair_line.text()
+        date = self.date_line.text()
+        repair_description = self.repair_description_line.text()
+        printer_repair_insertion = (mac_address, printer_repair, date, repair_description)
+        mac_addresses = get_mac_address_printer()
+        if mac_address not in mac_addresses:
+            print('Printer with this mac address doesnt exists, please make an insertion for an existing Printer.')
+        else:
+            insert_printer_repair(printer_repair_insertion)
+            print('Printer repair inserted for mac address.', mac_address)
